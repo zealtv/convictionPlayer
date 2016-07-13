@@ -1,0 +1,14 @@
+
+1 - wallpaper - short fade in 1 second
+2 - wallpaper + fire fades in 5 seconds
+4 - wallpaper + fire fades out 1 second
+5 - internet sequence pauses on last frame
+6 - internet sequence 2 pauses on last frame
+7 - prerecorded hell sequence fades to wall paper and holds
+
+
+fireplace 20 minutes, fade in 5 seconds
+
+
+fade in and out 1 2 3 5 10 15 20
+
