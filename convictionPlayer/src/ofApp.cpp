@@ -2,6 +2,27 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
+	//Workaround to hide cursor in a
+	Display* display = ofGetX11Display();
+ 	Window window = ofGetX11Window();
+ 
+ 	Cursor invisibleCursor;
+ 	Pixmap bitmapNoData;
+ 	XColor black;
+ 	static char noData[] = { 0,0,0,0,0,0,0,0 };
+ 	black.red = black.green = black.blue = 0;
+
+	bitmapNoData = XCreateBitmapFromData(display, window, noData, 8, 8);
+	invisibleCursor = XCreatePixmapCursor(display, bitmapNoData, bitmapNoData, &black, &black, 0, 0);
+	XDefineCursor(display,window, invisibleCursor);
+	XFreeCursor(display, invisibleCursor);
+
+
+	//set up OSC
+	oscReceiver.setup(PORT);
+
+
 	ofHideCursor();
 	cout << endl <<  "//startingCONVICTION----------------------" << endl;
 
@@ -34,6 +55,15 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+
+	while(oscReceiver.hasWaitingMessages()){
+		cout << "messages waiting" << endl;
+		ofxOscMessage m;
+		oscReceiver.getNextMessage(m);
+		if(m.getAddress() == "/command")
+			cout << m.getArgAsString(0) << endl;
+	}
+
 	if(currentVideoIndex >= 0)
 		currentVideo->update();
 

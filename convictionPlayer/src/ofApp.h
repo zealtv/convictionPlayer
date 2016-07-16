@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxOsc.h"
+#define PORT 12345
 
 class ofApp : public ofBaseApp{
 	public:
@@ -31,4 +33,6 @@ class ofApp : public ofBaseApp{
 		float fadeSpeed = 0.0;
 		bool fadingDown = false;
 		float opacity = 1.0;
+
+		ofxOscReceiver oscReceiver;
 };
