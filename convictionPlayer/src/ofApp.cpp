@@ -4,7 +4,9 @@
 void ofApp::setup(){
 
 	//Workaround to hide cursor in a
-/*	Display* display = ofGetX11Display();
+	#ifndef TARGET_OSX
+	cout << "target not osx" << endl;
+	Display* display = ofGetX11Display();
  	Window window = ofGetX11Window();
  
  	Cursor invisibleCursor;
@@ -17,10 +19,9 @@ void ofApp::setup(){
 	invisibleCursor = XCreatePixmapCursor(display, bitmapNoData, bitmapNoData, &black, &black, 0, 0);
 	XDefineCursor(display,window, invisibleCursor);
 	XFreeCursor(display, invisibleCursor);
-*/
+	#endif
 
 	//set up OSC
-
 
 	// ofxOscMessage m;
 	// m.setAddress("/message");
