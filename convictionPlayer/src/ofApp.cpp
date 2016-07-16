@@ -4,7 +4,7 @@
 void ofApp::setup(){
 
 	//Workaround to hide cursor in a
-	Display* display = ofGetX11Display();
+/*	Display* display = ofGetX11Display();
  	Window window = ofGetX11Window();
  
  	Cursor invisibleCursor;
@@ -17,14 +17,21 @@ void ofApp::setup(){
 	invisibleCursor = XCreatePixmapCursor(display, bitmapNoData, bitmapNoData, &black, &black, 0, 0);
 	XDefineCursor(display,window, invisibleCursor);
 	XFreeCursor(display, invisibleCursor);
-
+*/
 
 	//set up OSC
-	oscReceiver.setup(PORT);
+
+
+	// ofxOscMessage m;
+	// m.setAddress("/message");
+	// m.addStringArg("hello");
+	// oscSender.sendMessage(m, false);
+
+
 
 
 	ofHideCursor();
-	cout << endl <<  "//startingCONVICTION----------------------" << endl;
+	cout << endl <<  "//--startingCONVICTION----------------------" << endl;
 
 	ofDirectory dir("videos");
 	dir.allowExt("mov");
@@ -48,20 +55,41 @@ void ofApp::setup(){
 	}
 
 	cout << "Number of cues loaded = " << videos.size() << endl << endl;
+	oscReceiver.setup(12345);
+	oscSender.setup("255.255.255.255", 23456);
+	sendOscMessage("/message", "hello");
+
 	changeVideo(0);
 	opacity = 0.0;
 	fadingDown = true;
+
+	sendOscMessage("/opacity", ofToString(opacity));
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 
 	while(oscReceiver.hasWaitingMessages()){
-		cout << "messages waiting" << endl;
+		// cout << "messages waiting" << endl;
 		ofxOscMessage m;
 		oscReceiver.getNextMessage(m);
-		if(m.getAddress() == "/command")
-			cout << m.getArgAsString(0) << endl;
+
+		if(m.getAddress() == "/command"){
+			// cout << "arg type = " << m.getArgType() << endl;
+			string c = m.getArgAsString(0);
+
+			if(c == " ")
+				keyPressed(' ');
+			else
+				keyPressed(ofToChar(c));
+		}
+		if(m.getAddress() == "/query"){
+			string c = m.getArgAsString(0);
+			if(c == "hello")
+				sendOscMessage("/message", "hello");
+			// if(c == "opacity")
+			// 	sendOscMessage("/opacity", ofToString(opacity));	
+		}
 	}
 
 	if(currentVideoIndex >= 0)
@@ -158,6 +186,8 @@ void ofApp::fadeDown(bool d, float s){
 	if(d)
 		prompt = "fading down in ";
 	cout << prompt << s << "s" << endl;
+	sendOscMessage("/message", prompt + ofToString(s) + "s");
+
 }
 
 //--------------------------------------------------------------
@@ -168,6 +198,7 @@ void ofApp::changeVideo(int key){
 		currentVideoIndex = 0;
 
 	cout << "Current cue = " << (currentVideoIndex + 1) << endl;
+	sendOscMessage("/cue", ofToString((currentVideoIndex + 1)));
 	
 	for(auto v : videos)
 		v->stop();
@@ -180,6 +211,21 @@ void ofApp::changeVideo(int key){
 
 	// fade in and out 1 2 3 5 10 15 20
 }
+
+
+
+
+
+
+
+
+void ofApp::sendOscMessage(string address, string message){
+	ofxOscMessage m;
+	m.setAddress(address);
+	m.addStringArg(message);
+	oscSender.sendMessage(m, false);
+}
+
 
 
 //--------------------------------------------------------------

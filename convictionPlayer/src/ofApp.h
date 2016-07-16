@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxOsc.h"
-#define PORT 12345
+// #define PORT 12345
 
 class ofApp : public ofBaseApp{
 	public:
@@ -35,4 +35,6 @@ class ofApp : public ofBaseApp{
 		float opacity = 1.0;
 
 		ofxOscReceiver oscReceiver;
+		ofxOscSender oscSender;
+		void sendOscMessage(string address, string message);
 };
